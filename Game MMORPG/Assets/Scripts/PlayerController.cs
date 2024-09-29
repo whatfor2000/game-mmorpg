@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     public float baseMoveSpeed = 5f;
     public float rotateSpeed = 90f;
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // Only allow movement and actions for the local player
+        if (!photonView.IsMine) return;
+
         // Get input for movement
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -52,30 +56,36 @@ public class PlayerController : MonoBehaviour
         // Perform special ability
         if (Input.GetKeyDown(KeyCode.Space) && currentClass != null)
         {
-            currentClass.PerformSpecialAbility();
+            photonView.RPC("RpcPerformSpecialAbility", RpcTarget.All);
         }
     }
 
     public void ChangeClass(Weapon newWeapon)
     {
-        if (currentWeapon != null)
+        if (photonView.IsMine)
         {
-            // Drop the current weapon
-            DropWeapon();
+            if (currentWeapon != null)
+            {
+                // Drop the current weapon
+                DropWeapon();
+            }
+
+            // Pick up the new weapon
+            currentWeapon = newWeapon;
+            currentWeapon.gameObject.SetActive(false);
+
+            // Change to the new class
+            if (currentClass != null)
+            {
+                Destroy(currentClass);
+            }
+            currentClass = gameObject.AddComponent(newWeapon.associatedClass.GetType()) as CharacterClass;
+
+            Debug.Log($"Changed to {currentClass.className} class!");
+
+            // Call a RPC to synchronize class change with other players
+            photonView.RPC("RpcChangeClass", RpcTarget.Others, currentClass.className);
         }
-
-        // Pick up the new weapon
-        currentWeapon = newWeapon;
-        currentWeapon.gameObject.SetActive(false);
-
-        // Change to the new class
-        if (currentClass != null)
-        {
-            Destroy(currentClass);
-        }
-        currentClass = gameObject.AddComponent(newWeapon.associatedClass.GetType()) as CharacterClass;
-
-        Debug.Log($"Changed to {currentClass.className} class!");
     }
 
     private void DropWeapon()
@@ -85,6 +95,23 @@ public class PlayerController : MonoBehaviour
             currentWeapon.gameObject.SetActive(true);
             currentWeapon.transform.position = transform.position + transform.forward;
             currentWeapon = null;
+        }
+    }
+
+    [PunRPC]
+    private void RpcChangeClass(string newClassName)
+    {
+        // Change class for non-local players
+        // You might want to handle loading the correct class here
+        Debug.Log($"Player changed to {newClassName} class!");
+    }
+
+    [PunRPC]
+    private void RpcPerformSpecialAbility()
+    {
+        if (currentClass != null)
+        {
+            currentClass.PerformSpecialAbility();
         }
     }
 }
