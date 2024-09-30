@@ -1,12 +1,13 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviour
 {
     public float baseMoveSpeed = 5f;
     public float rotateSpeed = 90f;
 
     private CharacterController controller;
+    private PhotonView view;
     private float verticalVelocity;
     public float gravity = -9.81f;
 
@@ -16,12 +17,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        view = GetComponent<PhotonView>();
     }
 
     private void Update()
     {
         // Only allow movement and actions for the local player
-        if (!photonView.IsMine) return;
+        if (!view.IsMine) return;
 
         // Get input for movement
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -56,13 +58,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
         // Perform special ability
         if (Input.GetKeyDown(KeyCode.Space) && currentClass != null)
         {
-            photonView.RPC("RpcPerformSpecialAbility", RpcTarget.All);
+            view.RPC("RpcPerformSpecialAbility", RpcTarget.All);
         }
     }
 
     public void ChangeClass(Weapon newWeapon)
     {
-        if (photonView.IsMine)
+        if (view.IsMine)
         {
             if (currentWeapon != null)
             {
@@ -84,7 +86,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             Debug.Log($"Changed to {currentClass.className} class!");
 
             // Call a RPC to synchronize class change with other players
-            photonView.RPC("RpcChangeClass", RpcTarget.Others, currentClass.className);
+            view.RPC("RpcChangeClass", RpcTarget.Others, currentClass.className);
         }
     }
 

@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
@@ -61,8 +62,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("Joined Room: " + PhotonNetwork.CurrentRoom.Name);
         camera.SetActive(false);
         mainMenuPanel.SetActive(false);
-        FindObjectOfType<GameManager>().Start();
-        
+        PhotonNetwork.LoadLevel("Lobby");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab; // Assign your player prefab in the Inspector
     public Transform[] spawnPoints; // Assign spawn points in the Inspector
@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             SpawnPlayers();
         }
-
+        PhotonNetwork.AutomaticallySyncScene = true; 
     }
 
     private void SpawnPlayers()
@@ -30,16 +30,5 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ChangePlayerClass(PlayerController playerController, Weapon newWeapon)
     {
         playerController.ChangeClass(newWeapon);
-    }
-
-    // Optionally implement game state management methods
-    public void StartGame()
-    {
-        // Logic to start the game
-    }
-
-    public void EndGame()
-    {
-        // Logic to end the game
     }
 }

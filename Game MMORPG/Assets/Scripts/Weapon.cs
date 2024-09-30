@@ -11,7 +11,8 @@ public class Weapon : MonoBehaviourPun
         if (other.CompareTag("Player"))
         {
             PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null && playerController.photonView.IsMine)
+            PhotonView view = other.GetComponent<PhotonView>();
+            if (playerController != null && view.IsMine)
             {
                 // Call RPC to change class on all clients
                 playerController.ChangeClass(this);

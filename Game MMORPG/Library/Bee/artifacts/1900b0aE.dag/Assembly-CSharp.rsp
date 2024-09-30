@@ -122,6 +122,8 @@
 -define:PUN_2_0_OR_NEWER
 -define:PUN_2_OR_NEWER
 -define:PUN_2_19_OR_NEWER
+-define:FUSION_WEAVER
+-define:FUSION2
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
 -r:"Assets/Photon/Fusion/Assemblies/Fusion.Common.dll"
@@ -390,7 +392,6 @@
 "Assets/Photon/PhotonChat/Demos/DemoChat/NamePickGui.cs"
 "Assets/Photon/PhotonRealtime/Demos/DemoLoadBalancing/ConnectAndJoinRandomLb.cs"
 "Assets/Scripts/Archer.cs"
-"Assets/Scripts/BasicSpawner.cs"
 "Assets/Scripts/CharacterClass.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/Mage.cs"
