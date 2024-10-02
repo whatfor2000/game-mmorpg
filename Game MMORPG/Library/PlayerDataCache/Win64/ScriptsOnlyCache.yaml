@@ -1,13 +1,20 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp:
+    - Archer
+    - Mage
     - PlayerController
+    - Warrior
     - Weapon
     Assembly-CSharp.dll:
+    - Archer
     - GamePlayManager
+    - Mage
     - MainMenuManager
     - PlayerController
     - ReadyRoomManager
+    - Warrior
+    - Weapon
     Fusion.Realtime.dll:
     - Fusion.Photon.Realtime.PhotonAppSettings
     Fusion.Runtime.dll:
@@ -50,6 +57,7 @@ ScriptsOnlyBuild:
     - TMPro.TMP_Settings
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
+    - TMPro.TextMeshProUGUI
     Unity.TextMeshPro.dll:
     - TMPro.TMP_FontAsset
     - TMPro.TMP_InputField
@@ -215,6 +223,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 64
       Script: {instanceID: 0}
+    - Class: 65
+      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 89
@@ -224,14 +234,32 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1540}
+      Script: {instanceID: 1950}
     - Class: 114
-      Script: {instanceID: 1952}
+      Script: {instanceID: 2284}
+    - Class: 114
+      Script: {instanceID: 2962}
     - Class: 114
       Script: {instanceID: 3014}
     - Class: 114
       Script: {instanceID: 3188}
+    - Class: 114
+      Script: {instanceID: 3590}
+    - Class: 114
+      Script: {instanceID: 5384}
+    - Class: 114
+      Script: {instanceID: 5416}
+    - Class: 114
+      Script: {instanceID: 5736}
+    - Class: 114
+      Script: {instanceID: 5990}
+    - Class: 114
+      Script: {instanceID: 6180}
+    - Class: 114
+      Script: {instanceID: 6844}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 136
       Script: {instanceID: 0}
@@ -240,6 +268,12 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
     Assets/Scenes/Mainmenu.unity:
     - Class: 1
@@ -281,7 +315,7 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1540}
+      Script: {instanceID: 1588}
     - Class: 114
       Script: {instanceID: 1590}
     - Class: 114
@@ -289,21 +323,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1594}
     - Class: 114
-      Script: {instanceID: 1596}
+      Script: {instanceID: 1598}
     - Class: 114
       Script: {instanceID: 1600}
     - Class: 114
-      Script: {instanceID: 1602}
+      Script: {instanceID: 1648}
     - Class: 114
-      Script: {instanceID: 1650}
+      Script: {instanceID: 1692}
     - Class: 114
-      Script: {instanceID: 1694}
+      Script: {instanceID: 1850}
     - Class: 114
-      Script: {instanceID: 1852}
+      Script: {instanceID: 1950}
     - Class: 114
-      Script: {instanceID: 1952}
+      Script: {instanceID: 2274}
     - Class: 114
-      Script: {instanceID: 2276}
+      Script: {instanceID: 2284}
     - Class: 114
       Script: {instanceID: 2734}
     - Class: 114
@@ -316,6 +350,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 3188}
     - Class: 114
       Script: {instanceID: 3352}
+    - Class: 114
+      Script: {instanceID: 3590}
     - Class: 114
       Script: {instanceID: 4036}
     - Class: 114
@@ -343,7 +379,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5384}
     - Class: 114
+      Script: {instanceID: 5416}
+    - Class: 114
       Script: {instanceID: 5630}
+    - Class: 114
+      Script: {instanceID: 5736}
     - Class: 114
       Script: {instanceID: 5744}
     - Class: 114
@@ -432,9 +472,9 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1594}
+      Script: {instanceID: 1592}
     - Class: 114
-      Script: {instanceID: 1650}
+      Script: {instanceID: 1648}
     - Class: 114
       Script: {instanceID: 2734}
     - Class: 114
@@ -466,12 +506,6 @@ ScriptsOnlyBuild:
     - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
-  - hash:
-      serializedVersion: 2
-      Hash: 42dee602291086556fd890234c7bfac2
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: PlayerController
   - hash:
       serializedVersion: 2
       Hash: b5007673bbbdb9d12597a1d8201370f5
@@ -676,6 +710,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro
     namespaceName: TMPro
     className: TMP_StyleSheet
+  - hash:
+      serializedVersion: 2
+      Hash: 6a36835560cb2193ac3453f4f40a866e
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: PlayerController
   - hash:
       serializedVersion: 2
       Hash: ad49e20f31ed572e586aa8bbaafb591b
@@ -894,7 +934,7 @@ ScriptsOnlyBuild:
     className: TMP_SelectionCaret
   - hash:
       serializedVersion: 2
-      Hash: 5e01b6b7f2fb9aaa5cc2851e6f786a74
+      Hash: d130ac737ce3490d3be8fda67764b6e1
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: GamePlayManager
@@ -1716,7 +1756,7 @@ ScriptsOnlyBuild:
     className: NetworkCharacterController
   - hash:
       serializedVersion: 2
-      Hash: 93676fe0e2daad383406c48607a0f9ba
+      Hash: 5236fac123ce2910e3085ad22ab56cbe
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: MainMenuManager

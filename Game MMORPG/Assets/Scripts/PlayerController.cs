@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerController : MonoBehaviourPunCallbacks 
 {
@@ -13,24 +14,26 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public float gravity = -9.81f;
 
     private CharacterClass currentClass;
-    private Weapon currentWeapon;
+    private Weapon equippedWeapon;
 
     private Camera camera;
+    public TMP_Text playerNameText;
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
         camera = GetComponentInChildren<Camera>();
         view = GetComponent<PhotonView>();
+
+        playerNameText.text = PhotonNetwork.NickName;
     }
 
     private void Update()
     {
         // Only allow movement and actions for the local player
-        if (view.IsMine){
-
+        if (view.IsMine)
+        {
             camera.enabled = true;
-            
 
             // Get input for movement
             float moveHorizontal = Input.GetAxis("Horizontal");
@@ -68,8 +71,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 view.RPC("RpcPerformSpecialAbility", RpcTarget.All);
             }
         }
-        else{
+        else
+        {
             camera.enabled = false;
+            playerNameText.text = photonView.Owner.NickName;
         }
     }
 
@@ -77,15 +82,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (view.IsMine)
         {
-            if (currentWeapon != null)
+            // Check if there is an equipped weapon
+            if (equippedWeapon != null)
             {
-                // Drop the current weapon
+                // Drop the currently equipped weapon
                 DropWeapon();
             }
 
-            // Pick up the new weapon
-            currentWeapon = newWeapon;
-            currentWeapon.gameObject.SetActive(false);
+            // Equip the new weapon
+            equippedWeapon = newWeapon;
 
             // Change to the new class
             if (currentClass != null)
@@ -103,13 +108,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private void DropWeapon()
     {
-        if (currentWeapon != null)
+        // Ensure the equipped weapon is not null
+        if (equippedWeapon != null)
         {
-            currentWeapon.gameObject.SetActive(true);
-            currentWeapon.transform.position = transform.position + transform.forward;
-            currentWeapon = null;
+            // Calculate the drop position based on the player's current position and forward direction
+            Vector3 dropPosition = transform.position + transform.forward * 2f; // Adjust distance as needed
+
+            // Call RPC to drop the weapon on all clients
+            photonView.RPC("OnWeaponDropped", RpcTarget.All, equippedWeapon.photonView.ViewID, dropPosition);
+
+            // Optionally deactivate or destroy the weapon locally
+            equippedWeapon.SetActive(false);
+            equippedWeapon = null; // Clear equipped weapon reference
         }
     }
+
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -137,8 +150,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private void RpcChangeClass(string newClassName)
     {
         // Change class for non-local players
-        // You might want to handle loading the correct class here
         Debug.Log($"Player changed to {newClassName} class!");
+
+        // Optionally, you can instantiate the new class component here as well if needed
+        // Example: AddComponent<CharacterClass>() depending on how you want to handle classes
     }
 
     [PunRPC]
@@ -147,6 +162,26 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (currentClass != null)
         {
             currentClass.PerformSpecialAbility();
+        }
+    }
+    
+    [PunRPC]
+    public void OnWeaponDropped(int weaponViewID, Vector3 dropPosition)
+    {
+        // Find the weapon by its PhotonView ID
+        PhotonView weaponView = PhotonView.Find(weaponViewID);
+        if (weaponView != null)
+        {
+            // Get the weapon component
+            Weapon droppedWeapon = weaponView.GetComponent<Weapon>();
+            
+            // Activate the weapon again in the world
+            droppedWeapon.SetActive(true); 
+            
+            // Set the position to where it drops
+            droppedWeapon.transform.position = dropPosition; // Use the received drop position
+            droppedWeapon.transform.rotation = Quaternion.identity; // Optional: reset rotation
+            Debug.Log($"Weapon {droppedWeapon.weaponName} dropped at position: {dropPosition}");
         }
     }
 }

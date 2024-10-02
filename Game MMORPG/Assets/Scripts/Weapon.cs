@@ -14,13 +14,21 @@ public class Weapon : MonoBehaviourPun
             PhotonView view = other.GetComponent<PhotonView>();
             if (playerController != null && view.IsMine)
             {
-                // Call RPC to change class on all clients
+                // Call the method to change class and manage weapon pickups
                 playerController.ChangeClass(this);
+                
+                // Notify all clients to deactivate this weapon
+                photonView.RPC("DeactivateWeapon", RpcTarget.All);
             }
         }
     }
 
-    // Optionally, you can add a method to activate/deactivate the weapon
+    [PunRPC]
+    public void DeactivateWeapon()
+    {
+        SetActive(false);
+    }
+
     public void SetActive(bool isActive)
     {
         gameObject.SetActive(isActive);

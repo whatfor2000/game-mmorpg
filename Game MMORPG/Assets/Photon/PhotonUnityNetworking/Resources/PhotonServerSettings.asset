@@ -42,6 +42,9 @@ MonoBehaviour:
   - RpcChangeClass
   - RpcPerformSpecialAbility
   - RpcUpdateClass
+  - OnWeaponPickedUp
+  - OnWeaponDropped
+  - DeactivateWeapon
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
