@@ -1,7 +1,8 @@
 using UnityEngine;
+using Photon.Realtime;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks 
 {
     public float baseMoveSpeed = 5f;
     public float rotateSpeed = 90f;
@@ -14,51 +15,61 @@ public class PlayerController : MonoBehaviour
     private CharacterClass currentClass;
     private Weapon currentWeapon;
 
+    private Camera camera;
+
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        camera = GetComponentInChildren<Camera>();
         view = GetComponent<PhotonView>();
     }
 
     private void Update()
     {
         // Only allow movement and actions for the local player
-        if (!view.IsMine) return;
+        if (view.IsMine){
 
-        // Get input for movement
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+            camera.enabled = true;
+            
 
-        // Calculate movement vector
-        Vector3 movement = transform.right * moveHorizontal + transform.forward * moveVertical;
+            // Get input for movement
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            float moveVertical = Input.GetAxis("Vertical");
 
-        // Apply gravity
-        if (controller.isGrounded)
-        {
-            verticalVelocity = -1f;
+            // Calculate movement vector
+            Vector3 movement = transform.right * moveHorizontal + transform.forward * moveVertical;
+
+            // Apply gravity
+            if (controller.isGrounded)
+            {
+                verticalVelocity = -1f;
+            }
+            else
+            {
+                verticalVelocity += gravity * Time.deltaTime;
+            }
+            movement.y = verticalVelocity;
+
+            // Move the player
+            float currentMoveSpeed = baseMoveSpeed;
+            if (currentClass != null)
+            {
+                currentMoveSpeed *= currentClass.moveSpeedModifier;
+            }
+            controller.Move(movement * currentMoveSpeed * Time.deltaTime);
+
+            // Rotate the player with mouse
+            float mouseX = Input.GetAxis("Mouse X") * rotateSpeed * Time.deltaTime;
+            transform.Rotate(Vector3.up * mouseX);
+
+            // Perform special ability
+            if (Input.GetKeyDown(KeyCode.Space) && currentClass != null)
+            {
+                view.RPC("RpcPerformSpecialAbility", RpcTarget.All);
+            }
         }
-        else
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-        }
-        movement.y = verticalVelocity;
-
-        // Move the player
-        float currentMoveSpeed = baseMoveSpeed;
-        if (currentClass != null)
-        {
-            currentMoveSpeed *= currentClass.moveSpeedModifier;
-        }
-        controller.Move(movement * currentMoveSpeed * Time.deltaTime);
-
-        // Rotate the player with mouse
-        float mouseX = Input.GetAxis("Mouse X") * rotateSpeed * Time.deltaTime;
-        transform.Rotate(Vector3.up * mouseX);
-
-        // Perform special ability
-        if (Input.GetKeyDown(KeyCode.Space) && currentClass != null)
-        {
-            view.RPC("RpcPerformSpecialAbility", RpcTarget.All);
+        else{
+            camera.enabled = false;
         }
     }
 
@@ -97,6 +108,28 @@ public class PlayerController : MonoBehaviour
             currentWeapon.gameObject.SetActive(true);
             currentWeapon.transform.position = transform.position + transform.forward;
             currentWeapon = null;
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        // Check if the disconnected player is controlled by another player
+        if (otherPlayer.ActorNumber == view.Owner.ActorNumber)
+        {
+            // Optionally, you can destroy the local player object if necessary
+            PhotonNetwork.Destroy(gameObject);
+        }
+
+        // Optionally, update the UI or perform other logic here
+        Debug.Log($"{otherPlayer.NickName} has left the room.");
+    }
+
+    void OnDestroy()
+    {
+        // Clean up resources if needed when the object is destroyed
+        if (camera != null)
+        {
+            camera.enabled = false;
         }
     }
 
