@@ -9,6 +9,7 @@ public class GamePlayManager : MonoBehaviour
     private void Start()
     {
         SpawnPlayer();
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     void SpawnPlayer()

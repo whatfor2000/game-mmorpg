@@ -16,6 +16,18 @@ public class ReadyRoomManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerList();
         waitingText.text = "Waiting for players...";
+
+        PhotonNetwork.AutomaticallySyncScene = true;
+        
+        // Check if the player is the host (the one who created the room)
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.gameObject.SetActive(true);  // Enable Start Button for the host
+        }
+        else
+        {
+            startButton.gameObject.SetActive(false); // Hide Start Button for other players
+        }
     }
 
     public void UpdatePlayerList()
@@ -36,11 +48,8 @@ public class ReadyRoomManager : MonoBehaviourPunCallbacks
 
     public void OnStartButtonPressed()
     {
-        PhotonNetwork.LoadLevel("Lobby");
         if(PhotonNetwork.IsMasterClient){
-            startButton.enabled = true;
-        }else{
-            waitingText.text = "you are not master client!";
+            PhotonNetwork.LoadLevel("Lobby");
         }
     }
 
@@ -80,6 +89,14 @@ public class ReadyRoomManager : MonoBehaviourPunCallbacks
             CheckAllPlayersReady();
         }
     }
-
+    
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        // If the current player is now the host, enable the Start Button
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.gameObject.SetActive(true);
+        }
+    }
 
 }
