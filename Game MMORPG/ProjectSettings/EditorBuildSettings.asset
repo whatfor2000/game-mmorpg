@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Mainmenu.unity
     guid: a7a6c131132faff4a8fab346f7165ff2
   - enabled: 1
+    path: Assets/Scenes/ReadyRoom.unity
+    guid: 6ae7fa5f177abc44586fc34b9cd65a38
+  - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 18328d82d25288a418bbc9e4e69172bb
   m_configObjects: {}
