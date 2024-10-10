@@ -6,6 +6,11 @@ public class GamePlayManager : MonoBehaviour
     public GameObject playerPrefab;  // Assign the player prefab here
     public Transform[] spawnPoints;  // Predefined spawn points (optional)
 
+    // Define the boundaries for the random spawn position
+    public Vector3 spawnAreaMin = new Vector3(-10f, 1f, -10f);  // Minimum X, Y, Z coordinates
+    public Vector3 spawnAreaMax = new Vector3(10f, 1f, 10f);    // Maximum X, Y, Z coordinates
+
+
     private void Start()
     {
         SpawnPlayer();
@@ -20,21 +25,14 @@ public class GamePlayManager : MonoBehaviour
             return;
         }
 
-        Vector3 spawnPosition;
+        // Generate a random position within the defined spawn area
+        Vector3 randomSpawnPosition = new Vector3(
+            Random.Range(spawnAreaMin.x, spawnAreaMax.x),
+            spawnAreaMin.y,  // Set to the fixed Y coordinate (ground level)
+            Random.Range(spawnAreaMin.z, spawnAreaMax.z)
+        );
 
-        // If you have spawn points, choose one at random, otherwise spawn at a random position
-        if (spawnPoints.Length > 0)
-        {
-            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            spawnPosition = spawnPoint.position;
-        }
-        else
-        {
-            // Generate a random position if there are no predefined spawn points
-            spawnPosition = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
-        }
-
-        // Instantiate the player using PhotonNetwork.Instantiate
-        PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
+        // Instantiate the player at the random spawn position
+        PhotonNetwork.Instantiate(playerPrefab.name, randomSpawnPosition, Quaternion.identity, 0);
     }
 }

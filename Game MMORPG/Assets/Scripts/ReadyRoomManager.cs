@@ -18,7 +18,7 @@ public class ReadyRoomManager : MonoBehaviourPunCallbacks
         waitingText.text = "Waiting for players...";
 
         PhotonNetwork.AutomaticallySyncScene = true;
-        
+            
         // Check if the player is the host (the one who created the room)
         if (PhotonNetwork.IsMasterClient)
         {
